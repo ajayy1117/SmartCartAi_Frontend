@@ -17,7 +17,8 @@ export default function AuthModal({ onClose, onLogin }) {
     const payload = isLogin ? { email, password } : { email, password, name };
 
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL || ''}${url}`, {
+      const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+      const res = await fetch(`${baseUrl}${url}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),

@@ -13,7 +13,8 @@ export default function AIPredictionCard({ data }) {
       setLoading(true);
       setError(null);
       try {
-        const res = await fetch(`${import.meta.env.VITE_API_URL || ''}/api/predict?product=${encodeURIComponent(data.name)}`);
+        const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+        const res = await fetch(`${baseUrl}/api/predict?product=${encodeURIComponent(data.name)}`);
         const text = await res.text();
         let json;
         try {
