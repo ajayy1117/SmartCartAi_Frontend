@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import AuthModal from './components/AuthModal';
 import Ticker from './components/Ticker';
@@ -6,9 +7,11 @@ import Hero from './components/Hero';
 import SearchZone from './components/SearchZone';
 import Loading from './components/Loading';
 import ResultsContainer from './components/ResultsContainer';
+import SplashScreen from './components/SplashScreen';
 import { PKS, DEMO, genH } from './data';
 
 export default function App() {
+  const navigate = useNavigate();
   const [activePF, setActivePF] = useState(new Set(PKS));
   const searchTimeoutRef = useRef(null);
   const [query, setQuery] = useState('');
@@ -16,7 +19,6 @@ export default function App() {
   const [searchData, setSearchData] = useState(null);
 
   // Auth State
-  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(null);
 
@@ -35,7 +37,7 @@ export default function App() {
     setUser(newUser);
     localStorage.setItem('token', newToken);
     localStorage.setItem('user', JSON.stringify(newUser));
-    setIsAuthModalOpen(false);
+    navigate('/dashboard', { replace: true });
   };
 
   const handleLogout = () => {
@@ -131,41 +133,56 @@ export default function App() {
   }, []);
 
   return (
-    <>
-      <Navbar 
-        user={user} 
-        onLoginClick={() => setIsAuthModalOpen(true)} 
-        onLogoutClick={handleLogout} 
-      />
-      <Ticker />
+    <Routes>
+      <Route path="/" element={<SplashScreen />} />
       
-      {status === 'idle' && (
-        <Hero onDealClick={handleSearch} />
-      )}
-
-      <SearchZone 
-        activePF={activePF} 
-        togglePF={togglePF} 
-        onSearch={handleSearch} 
-      />
-
-      {(status === 'loading' || status === 'complete') && (
+      <Route path="/dashboard" element={
         <>
-          {status === 'loading' && <Loading query={query} activePF={activePF} searchData={null} />}
-          {status === 'complete' && searchData && (
-            <ResultsContainer activePF={activePF} data={searchData} />
+          <Navbar 
+            user={user} 
+            onLoginClick={() => navigate('/login')} 
+            onLogoutClick={handleLogout} 
+          />
+          <Ticker />
+          
+          {status === 'idle' && (
+            <Hero onDealClick={handleSearch} />
           )}
+
+          <SearchZone 
+            activePF={activePF} 
+            togglePF={togglePF} 
+            onSearch={handleSearch} 
+          />
+
+          {(status === 'loading' || status === 'complete') && (
+            <>
+              {status === 'loading' && <Loading query={query} activePF={activePF} searchData={null} />}
+              {status === 'complete' && searchData && (
+                <ResultsContainer activePF={activePF} data={searchData} />
+              )}
+            </>
+          )}
+
+          <div className="toasts" id="toasts"></div>
         </>
-      )}
+      } />
 
-      <div className="toasts" id="toasts"></div>
+      <Route path="/login" element={
+        <div style={{ minHeight: '100vh', background: 'var(--off)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          {user ? (
+            <Navigate to="/dashboard" replace />
+          ) : (
+            <AuthModal 
+              onClose={() => navigate('/dashboard')} 
+              onLogin={handleLogin} 
+            />
+          )}
+        </div>
+      } />
 
-      {isAuthModalOpen && (
-        <AuthModal 
-          onClose={() => setIsAuthModalOpen(false)} 
-          onLogin={handleLogin} 
-        />
-      )}
-    </>
+      {/* Fallback route */}
+      <Route path="*" element={<Navigate to="/" replace />} />
+    </Routes>
   );
 }

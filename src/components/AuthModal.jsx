@@ -211,6 +211,26 @@ export default function AuthModal({ onClose, onLogin }) {
             {isLogin ? 'Sign Up' : 'Sign In'}
           </button>
         </div>
+
+        <div style={{ position: 'relative', margin: '24px 0', textAlign: 'center' }}>
+          <div style={{ position: 'absolute', top: '50%', left: 0, right: 0, borderTop: '1px solid var(--line)' }}></div>
+          <span style={{ position: 'relative', background: 'var(--w)', padding: '0 12px', fontSize: '12px', color: 'var(--ink4)', fontFamily: 'var(--mono)', textTransform: 'uppercase', letterSpacing: '1.5px' }}>OR</span>
+        </div>
+
+        <button 
+          type="button" 
+          onClick={onClose} 
+          style={{
+            width: '100%', padding: '14px', borderRadius: 'var(--r-s)', border: '1.5px solid var(--line)', 
+            background: 'var(--off)', color: 'var(--ink2)', fontWeight: 600, fontFamily: 'var(--head)',
+            cursor: 'pointer', fontSize: '14px', transition: 'all 0.2s ease', 
+            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px'
+          }}
+          onMouseEnter={(e) => { e.target.style.background = 'var(--w)'; e.target.style.borderColor = 'var(--line2)'; e.target.style.boxShadow = 'var(--sh)'; }}
+          onMouseLeave={(e) => { e.target.style.background = 'var(--off)'; e.target.style.borderColor = 'var(--line)'; e.target.style.boxShadow = 'none'; }}
+        >
+          <span style={{ fontSize: '16px' }}>👀</span> Continue as Guest
+        </button>
       </div>
     </div>
   );

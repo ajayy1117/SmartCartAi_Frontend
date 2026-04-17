@@ -4,7 +4,6 @@ import { PF } from '../../data';
 export default function AlertsCard({ avail, data }) {
   const [alerts, setAlerts] = useState({});
   const [notifs, setNotifs] = useState([]);
-  const [email, setEmail] = useState('');
   const [saving, setSaving] = useState(false);
   
   const user = JSON.parse(localStorage.getItem('user') || 'null');
@@ -14,8 +13,8 @@ export default function AlertsCard({ avail, data }) {
     let n = 0;
     const newNotifs = [];
     
-    if (!user && !email) {
-      alert('Please enter your email or log in to save alerts.');
+    if (!user) {
+      alert('Please log in to your profile to save alerts.');
       return;
     }
 
@@ -42,8 +41,7 @@ export default function AlertsCard({ avail, data }) {
             body: JSON.stringify({
               product: data.name,
               platform: k,
-              threshold: thr,
-              email: user ? user.email : email
+              threshold: thr
             })
           });
         } catch(err) {
@@ -125,31 +123,7 @@ export default function AlertsCard({ avail, data }) {
           })}
         </div>
         
-        {!user && (
-          <div style={{ marginBottom: '20px', marginTop: '4px' }}>
-            <label style={{ 
-              display: 'block', marginBottom: '8px', fontSize: '12px', 
-              color: 'var(--ink3)', fontWeight: '600', fontFamily: 'var(--mono)',
-              letterSpacing: '.04em',
-            }}>
-              📧 EMAIL FOR ALERTS
-            </label>
-            <input 
-              type="email" 
-              placeholder="Enter your email to receive alerts" 
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              style={{ 
-                width: '100%', padding: '12px 16px', borderRadius: 'var(--r-xs)', 
-                border: '1.5px solid var(--line)', backgroundColor: 'var(--off)', 
-                color: 'var(--ink)', fontFamily: 'var(--sans)', fontSize: '14px',
-                outline: 'none', transition: 'border-color .2s',
-              }}
-              onFocus={(e) => e.target.style.borderColor = 'var(--primary)'}
-              onBlur={(e) => e.target.style.borderColor = 'var(--line)'}
-            />
-          </div>
-        )}
+
 
         <button 
           className="save-alerts-btn" 

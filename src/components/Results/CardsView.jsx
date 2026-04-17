@@ -2,42 +2,15 @@ import React from 'react';
 import { PF } from '../../data';
 
 export default function CardsView({ avail, data, activePF, minP, maxP }) {
-  const sortedKeys = [...activePF];
-  const sorted = [
-    ...avail,
-    ...sortedKeys
-      .filter((k) => !avail.find(([ak]) => ak === k))
-      .map((k) => [k, data.pf[k] || {}]),
-  ];
-
   return (
     <div className="cards" style={{ display: 'grid' }}>
-      {sorted.map(([k, d], i) => {
+      {avail.map(([k, d], i) => {
         const pfc = PF[k];
         if (!pfc) return null;
 
         const isBest = d.p && d.p === minP;
-        const isMiss = !d.stock || !d.p;
         const bw = d.p ? Math.round(((d.p - minP) / (maxP - minP || 1)) * 60 + 40) : 0;
         const animDelay = `${i * 0.06}s`;
-
-        if (isMiss) {
-          return (
-            <div key={k} className="pcard miss" style={{ animation: `pop 0.35s ${animDelay} ease both` }}>
-              <div className="pcard-topline" style={{ background: 'var(--off3)' }}></div>
-              <div className="pcard-img-area">
-                <div className="pcard-emoji">{data.em || '📦'}</div>
-              </div>
-              <div className="pcard-body">
-                <div className="pcard-row1">
-                  <div className="pcard-logo" style={{ background: pfc.s }}>{pfc.em}</div>
-                  <div className="pcard-store">{pfc.n}</div>
-                </div>
-                <div className="pcard-miss-msg">Not available on {pfc.n}</div>
-              </div>
-            </div>
-          );
-        }
 
         const ratingValue = Number.isFinite(d.r) ? Math.min(5, Math.max(0, Number(d.r))) : 0;
         const fullStars = Math.floor(ratingValue);

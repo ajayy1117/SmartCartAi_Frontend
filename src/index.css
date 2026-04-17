@@ -1938,3 +1938,152 @@ body {
     scroll-behavior: auto !important;
   }
 }
+
+/* ===== SPLASH SCREEN ===== */
+.splash-wrap {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: var(--w);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.splash-wrap::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at center, var(--off) 0%, var(--line) 150%);
+  opacity: 0.5;
+}
+
+.creative-bag {
+  position: relative;
+  z-index: 2;
+  width: 80px;
+  height: 80px;
+  background: linear-gradient(135deg, var(--primary), #7c3aed);
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 20px 40px rgba(79,70,229,0.3);
+  animation: 
+    bagDrop 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards,
+    bagExpand 0.7s 1.8s cubic-bezier(0.8, 0, 0.2, 1) forwards;
+}
+
+.bag-handle {
+  position: absolute;
+  top: -24px;
+  width: 36px;
+  height: 28px;
+  border: 4px solid var(--primary);
+  border-bottom: none;
+  border-radius: 20px 20px 0 0;
+  opacity: 0;
+  z-index: -1;
+  animation: 
+    handleRise 0.5s 0.8s ease-out forwards,
+    handleHide 0.4s 1.7s ease-in forwards;
+}
+
+.bag-shimmer {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.bag-shimmer::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; bottom: 0;
+  width: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+  transform: translateX(-100%) skewX(-15deg);
+  animation: shimmerSweep 1s 2.6s forwards;
+}
+
+.bag-mark {
+  position: absolute;
+  font-size: 38px;
+  opacity: 0;
+  animation: 
+    markPop 0.5s 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards,
+    markHide 0.3s 1.7s ease-in forwards;
+}
+
+.bag-text {
+  position: absolute;
+  font-family: var(--head);
+  font-size: 30px;
+  font-weight: 800;
+  color: var(--w);
+  opacity: 0;
+  white-space: nowrap;
+  animation: textReveal 0.6s 2s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+.bag-text-ai {
+  font-family: var(--mono);
+  font-size: 14px;
+  font-weight: 600;
+  color: #c7d2fe;
+  margin-left: 3px;
+}
+
+/* Exit transition */
+.splash-wrap.exit {
+  animation: splashFadeOut 0.5s forwards;
+}
+.splash-wrap.exit .creative-bag {
+  animation: pillSlideUp 0.5s cubic-bezier(0.8, 0, 0.2, 1) forwards;
+}
+
+@keyframes bagDrop {
+  0% { transform: translateY(-50vh) scale(0.8); opacity: 0; }
+  100% { transform: translateY(0) scale(1); opacity: 1; }
+}
+
+@keyframes bagExpand {
+  to { width: 300px; border-radius: 40px; box-shadow: var(--sh-primary); }
+}
+
+@keyframes handleRise {
+  0% { transform: translateY(15px); opacity: 0; }
+  100% { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes handleHide {
+  to { opacity: 0; transform: translateY(15px); }
+}
+
+@keyframes markPop {
+  0% { transform: scale(0); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes markHide {
+  to { transform: scale(0); opacity: 0; }
+}
+
+@keyframes textReveal {
+  0% { opacity: 0; transform: scale(0.9); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+@keyframes shimmerSweep {
+  to { transform: translateX(100%) skewX(-15deg); }
+}
+
+@keyframes splashFadeOut {
+  to { opacity: 0; visibility: hidden; }
+}
+
+@keyframes pillSlideUp {
+  to { transform: translateY(-40px); opacity: 0; }
+}
