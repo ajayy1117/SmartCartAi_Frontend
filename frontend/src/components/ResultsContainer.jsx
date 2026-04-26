@@ -6,10 +6,13 @@ import ChartCard from './Results/ChartCard';
 import AIPredictionCard from './Results/AIPredictionCard';
 import AlertsCard from './Results/AlertsCard';
 import HistoryCard from './Results/HistoryCard';
+import RecommendationsCard from './Results/RecommendationsCard';
+import ReviewSystem from './Results/ReviewSystem';
 
 export default function ResultsContainer({ data, activePF }) {
   const [view, setView] = useState('cards');
   const [sortMode, setSortMode] = useState('price');
+  const [bottomTab, setBottomTab] = useState('suggested');
 
   if (!data) return null;
 
@@ -129,7 +132,67 @@ export default function ResultsContainer({ data, activePF }) {
       <ChartCard avail={avail} data={data} />
       <AIPredictionCard data={data} />
       <AlertsCard avail={avail} data={data} />
-      <HistoryCard avail={avail} data={data} />
+
+      {/* NEW: Bottom Section Tabs inspired by Flipkart/Amazon mix */}
+      <div className="bottom-tabs-container card-glass" style={{ marginTop: '2rem', padding: '0' }}>
+        <div className="b-tabs-hdr">
+          <button 
+            className={`b-tab ${bottomTab === 'suggested' ? 'active' : ''}`}
+            onClick={() => setBottomTab('suggested')}
+          >
+            📦 Suggested Items
+          </button>
+          <button 
+            className={`b-tab ${bottomTab === 'reviews' ? 'active' : ''}`}
+            onClick={() => setBottomTab('reviews')}
+          >
+            🛡️ Review Analysis
+          </button>
+          <button 
+            className={`b-tab ${bottomTab === 'history' ? 'active' : ''}`}
+            onClick={() => setBottomTab('history')}
+          >
+            📉 Price History
+          </button>
+        </div>
+        
+        <div className="b-tab-content">
+          {bottomTab === 'suggested' && <RecommendationsCard data={data} />}
+          {bottomTab === 'reviews' && <ReviewSystem data={data} />}
+          {bottomTab === 'history' && <HistoryCard avail={avail} data={data} />}
+        </div>
+      </div>
+
+      <style dangerouslySetInnerHTML={{ __html: `
+        .bottom-tabs-container { 
+          overflow: hidden; 
+          border: 1px solid rgba(0,0,0,0.1); 
+          background: white; 
+          border-radius: 8px;
+          box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+          margin-bottom: 2rem;
+        }
+        .b-tabs-hdr { 
+          display: flex; 
+          background: #f1f3f6; 
+          border-bottom: 1px solid #dbdbdb; 
+        }
+        .b-tab {
+          flex: 1; padding: 1.25rem; border: none; background: none; color: #878787;
+          font-weight: 700; cursor: pointer; transition: 0.3s; font-size: 0.9rem;
+          border-bottom: 3px solid transparent;
+          text-transform: uppercase;
+        }
+        .b-tab:hover { background: rgba(0,0,0,0.02); color: #2874f0; }
+        .b-tab.active { 
+          color: #2874f0; 
+          border-bottom-color: #2874f0;
+          background: white;
+        }
+        .b-tab-content { padding: 1rem; background: white; }
+        /* Override child card margins for tabbed layout */
+        .b-tab-content > div { margin-top: 0 !important; border: none !important; box-shadow: none !important; background: none !important; display: block !important; }
+      `}} />
     </div>
   );
 }

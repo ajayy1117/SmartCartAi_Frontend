@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { PKS, PF } from '../data';
+import VoiceSearch from './VoiceSearch';
+import CameraSearch from './CameraSearch';
 
 const QUERIES = [
   'Sony WH-1000XM5',
@@ -40,18 +42,29 @@ export default function SearchZone({ activePF, togglePF, onSearch }) {
             onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
             id="search-input"
           />
-          {query && (
-            <button
-              type="button"
-              className="search-clr"
-              style={{ display: 'flex' }}
-              onClick={clearQuery}
-              aria-label="Clear search"
-            >
-              ✕
-            </button>
-          )}
-          <div className="search-sep"></div>
+          <div className="search-actions">
+            {query && (
+              <button
+                type="button"
+                className="search-clr"
+                onClick={clearQuery}
+                aria-label="Clear search"
+              >
+                ✕
+              </button>
+            )}
+            <VoiceSearch onTranscript={(text) => {
+              setQuery(text);
+              onSearch(text);
+            }} />
+            <CameraSearch onVisualResults={(results) => {
+               if (results && results.length > 0) {
+                 const topMatch = results[0].name;
+                 setQuery(topMatch);
+                 onSearch(topMatch);
+               }
+            }} />
+          </div>
           <button className="search-btn" id="search-btn" onClick={handleSearch}>
             COMPARE →
           </button>

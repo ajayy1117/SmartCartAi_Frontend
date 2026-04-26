@@ -500,6 +500,14 @@ body {
 .search-clr:hover {
   color: var(--ink);
 }
+.search-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0 10px;
+  border-left: 1.5px solid var(--line);
+  margin: 12px 0;
+}
 .search-sep {
   width: 1.5px;
   background: var(--line);

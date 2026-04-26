@@ -73,9 +73,12 @@ export default function App() {
 
     try {
       const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+      console.log(`Searching for: ${q} at ${baseUrl}`);
+      
       const response = await fetch(`${baseUrl}/api/compare?q=${encodeURIComponent(q)}`);
       if (!response.ok) {
-        throw new Error(`Server responded with ${response.status}`);
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error || `Server responded with ${response.status}`);
       }
       
       const data = await response.json();
@@ -95,7 +98,7 @@ export default function App() {
           of: p.offers || [],
           emi: p.emi || null,
           ship: p.freeShip || false,
-          ret: 7, // Default return policy
+          ret: 7, 
           stock: true,
           disc: p.discount || 0,
           url: p.url || '#'
@@ -109,8 +112,8 @@ export default function App() {
         name: data.name || q,
         img: data.image,
         mrp: data.mrp || 0,
-        cat: 'Price Comparison',
-        desc: `Live pricing and availability for ${data.name || q} across multiple platforms.`,
+        cat: 'Product Match',
+        desc: `Verified deals for ${data.name || q}. Accuracy optimized.`,
         pf: pf,
         hist: genH(30, bases)
       };
@@ -121,6 +124,7 @@ export default function App() {
       console.error('Search error:', error);
       alert(`Search failed: ${error.message}`);
       setStatus('error');
+      setStatus('idle'); // Go back to idle on error
     }
   };
 
